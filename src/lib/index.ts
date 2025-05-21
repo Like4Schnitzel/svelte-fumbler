@@ -1,1 +1,7 @@
-// place files you want to import through the `$lib` alias in this folder.
+import { JSONFilePreset } from "lowdb/node";
+import type { User } from "./types";
+
+const defaultData: User[] = []
+
+export const db = await JSONFilePreset("db.json", defaultData);
+db.write();

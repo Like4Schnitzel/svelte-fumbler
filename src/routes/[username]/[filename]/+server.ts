@@ -3,9 +3,9 @@ import { fileTypeFromFile } from "file-type";
 import type { RequestHandler } from "@sveltejs/kit";
 
 export const GET: RequestHandler = async ({ params }) => {
-    const { filename } = params;
+    const { username, filename } = params;
 
-    const path = `./files/${filename}`;
+    const path = `./files/${username}/${filename}`;
     if (existsSync(path)) {
         const mimeTypeReader = fileTypeFromFile(path);
         const file = readFileSync(path);
