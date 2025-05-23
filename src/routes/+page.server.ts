@@ -23,10 +23,16 @@ export const actions = {
             if (!existsSync(`./files/${username}`)) {
                 mkdirSync(`./files/${username}`);
             }
-            writeFileSync(`./files/${username}/${file.name}`, Buffer.from(await file.arrayBuffer()));
+
+            const filename = file.name.toLowerCase().replace(/[^a-zA-Z0-9.]/g, '_');
+            if (existsSync(`./files/${username}/${filename}`)) {
+                return fail(400, { message: "File already exists." });
+            }
+            writeFileSync(`./files/${username}/${filename}`, Buffer.from(await file.arrayBuffer()));
 
             return {
-                success: true
+                success: true,
+                path: `/${username}/${filename}`,
             };
         } catch (e) {
             console.error(e);

@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { page } from '$app/state';
     let { data, form } = $props();
 </script>
 
@@ -10,7 +11,7 @@
 </form>
 <div class="form-response">
     {#if form?.success}
-        <p>File uploaded successfully!</p>
+        <p>File uploaded successfully to <a href={form.path}>{page.url.hostname}{form.path}</a>!</p>
     {:else if form?.message}
         <p>Error: {form.message}</p>
     {/if}
