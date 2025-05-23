@@ -1,41 +1,29 @@
-import { sha256 } from 'js-sha256';
-import { db } from '../lib/index.js';
+import { checkFormDataProps, checkUserAuth } from '../lib/index.js';
 import { writeFileSync, existsSync, mkdirSync } from 'fs';
 import { fail } from "@sveltejs/kit";
 
 export const actions = {
     default: async ({ request }) => {
         try {
-            const formData = Object.fromEntries(await request.formData());
-            if (!formData.username) {
-                return fail(400, { message: "Please provide a username." });
+            const formData = await request.formData();
+            const dataCheck = checkFormDataProps(formData, ["username", "password", "file"]);
+            if (!dataCheck.success) {
+                return fail(400, { message: dataCheck.message });
             }
 
-            if (!formData.password) {
-                return fail(400, { message: "Please provide a password." });
-            }
-
-            if (!formData.file) {
-                return fail(400, { message: "Please provide a file." });
-            }
-
-            const { username, password, file } = formData as { username: string, password: string, file: File };
-            const user = db.data.find(u => u.name === username);
-            if (!user) {
-                return fail(400, { message: `User ${username} does not exist.` });
-            }
-
-            if (user.password !== sha256(password)) {
-                return fail(400, { message: "Incorrect password." });
+            const { username, password, file } = Object.fromEntries(formData) as { username: string, password: string, file: File };
+            const authcheck = checkUserAuth(username, password);
+            if (!authcheck.success) {
+                return fail(400, { message: authcheck.message });
             }
 
             if (!existsSync('./files')) {
                 mkdirSync('./files');
             }
-            if (!existsSync(`./files/${user.name}`)) {
-                mkdirSync(`./files/${user.name}`);
+            if (!existsSync(`./files/${username}`)) {
+                mkdirSync(`./files/${username}`);
             }
-            writeFileSync(`./files/${user.name}/${file.name}`, Buffer.from(await file.arrayBuffer()));
+            writeFileSync(`./files/${username}/${file.name}`, Buffer.from(await file.arrayBuffer()));
 
             return {
                 success: true
