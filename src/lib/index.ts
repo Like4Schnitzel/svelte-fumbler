@@ -1,11 +1,14 @@
 import { JSONFilePreset } from "lowdb/node";
 import type { User } from "./types";
 import { sha256 } from "js-sha256";
+import { join } from "path";
 
 const defaultData: User[] = []
 
 export const db = await JSONFilePreset("db.json", defaultData);
 db.write();
+
+export const fileDirRoot = join(__dirname, "files");
 
 export function checkUserAuth(username: string, password: string): {
     success: boolean;

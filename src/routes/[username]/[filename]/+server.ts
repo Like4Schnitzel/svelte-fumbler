@@ -3,11 +3,12 @@ import { readFile } from "fs/promises";
 import mime from "mime";
 import { fileTypeFromFile } from "file-type";
 import type { RequestHandler } from "./$types";
+import { fileDirRoot } from "$lib";
 
 export const GET: RequestHandler = async ({ params }) => {
     const { username, filename } = params;
 
-    const path = `./files/${username}/${filename}`;
+    const path = `${fileDirRoot}/${username}/${filename}`;
     if (existsSync(path)) {
         const mimeTypeReader = fileTypeFromFile(path);
         const fileReader = readFile(path);

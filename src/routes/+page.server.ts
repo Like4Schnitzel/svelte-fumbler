@@ -1,4 +1,4 @@
-import { checkFormDataProps, checkUserAuth } from '../lib/index.js';
+import { checkFormDataProps, checkUserAuth, fileDirRoot } from '../lib/index.js';
 import { writeFileSync, existsSync, mkdirSync } from 'fs';
 import { fail } from "@sveltejs/kit";
 
@@ -17,18 +17,18 @@ export const actions = {
                 return fail(400, { message: authcheck.message });
             }
 
-            if (!existsSync('./files')) {
-                mkdirSync('./files');
+            if (!existsSync(fileDirRoot)) {
+                mkdirSync(fileDirRoot);
             }
-            if (!existsSync(`./files/${username}`)) {
-                mkdirSync(`./files/${username}`);
+            if (!existsSync(`${fileDirRoot}/${username}`)) {
+                mkdirSync(`${fileDirRoot}/${username}`);
             }
 
             const filename = file.name.toLowerCase().replace(/[^a-zA-Z0-9.]/g, '_');
-            if (existsSync(`./files/${username}/${filename}`)) {
+            if (existsSync(`${fileDirRoot}/${username}/${filename}`)) {
                 return fail(400, { message: "File already exists." });
             }
-            writeFileSync(`./files/${username}/${filename}`, Buffer.from(await file.arrayBuffer()));
+            writeFileSync(`${fileDirRoot}/${username}/${filename}`, Buffer.from(await file.arrayBuffer()));
 
             return {
                 success: true,
