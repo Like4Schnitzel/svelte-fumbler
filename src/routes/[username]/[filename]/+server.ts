@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from "fs";
+import { existsSync } from "fs";
 import { readFile } from "fs/promises";
 import mime from "mime";
 import { fileTypeFromFile } from "file-type";
