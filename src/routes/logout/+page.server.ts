@@ -1,5 +1,9 @@
 import { isRedirect, redirect } from '@sveltejs/kit';
 
+export const load = async () => {
+    redirect(303, '/');
+}
+
 export const actions = {
     default: async ({ cookies, request }) => {
         try {
