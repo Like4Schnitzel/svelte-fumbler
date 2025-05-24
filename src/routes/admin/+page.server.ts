@@ -9,7 +9,7 @@ export const actions = {
             const dataCheck = checkFormDataProps(formData, ["username", "password", "new-username"]);
             if (!dataCheck.success) {
                 // special case for new-username
-                if (dataCheck.message === "Please provide a new-username.") {
+                if (dataCheck.failedProp === "new-username") {
                     return fail(400, { message: "Please provide a username for the new user." });
                 }
                 return fail(400, { message: dataCheck.message });

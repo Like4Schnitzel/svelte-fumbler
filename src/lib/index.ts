@@ -38,12 +38,14 @@ export function checkUserAuth(username: string, password: string): {
 export function checkFormDataProps(formData: FormData, expectedProperties: string[]): {
     success: boolean;
     message?: string;
+    failedProp?: string;
 } {
     for (const prop of expectedProperties) {
         if (!formData.has(prop)) {
             return {
                 success: false,
                 message: `Please provide a ${prop}.`,
+                failedProp: prop,
             };
         }
     }
