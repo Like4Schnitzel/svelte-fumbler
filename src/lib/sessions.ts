@@ -1,3 +1,4 @@
+import type { Cookies } from "@sveltejs/kit";
 import type { Session, SessionTypes } from "./types";
 
 // stays in server memory until restart
@@ -16,7 +17,7 @@ export function createSession(userId: string, ttl: number, type: SessionTypes): 
 }
 
 export function addSession(session: Session): boolean {
-    if (sessions.find(s => s.username === session.username)) {
+    if (getSessionByUsername(session.username, session.purpose)) {
         return false; // session already exists
     }
     sessions.push(session);
@@ -46,6 +47,20 @@ export function getSessionById(sessionId: string): Session | undefined {
         sessions.splice(sessions.indexOf(session), 1);
         return undefined;
     }
+    return session;
+}
+
+export function getSessionFromCookies(cookies: Cookies) {
+    const sessionId = cookies.get('session-id');
+    if (!sessionId) {
+        return;
+    }
+
+    const session = getSessionById(sessionId);
+    if (!session) {
+        return;
+    }
+
     return session;
 }
 
