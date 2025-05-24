@@ -1,20 +1,31 @@
-import { checkFormDataProps, checkUserAuth, fileDirRoot } from '../lib/index.js';
+import { checkFormDataProps, checkUserAuth, fileDirRoot } from '$lib/index';
 import { writeFileSync, existsSync, mkdirSync } from 'fs';
 import { fail } from "@sveltejs/kit";
+import { getSessionFromCookies } from '$lib/sessions';
+
+export const load = async ({ cookies }) => {
+    return getSessionFromCookies(cookies);
+}
 
 export const actions = {
-    default: async ({ request }) => {
+    default: async ({ request, cookies }) => {
         try {
             const formData = await request.formData();
-            const dataCheck = checkFormDataProps(formData, ["username", "password", "file"]);
+            const dataCheck = checkFormDataProps(formData, ["file"]);
             if (!dataCheck.success) {
                 return fail(400, { message: dataCheck.message });
             }
 
-            const { username, password, file } = Object.fromEntries(formData) as { username: string, password: string, file: File };
-            const authcheck = checkUserAuth(username, password);
-            if (!authcheck.success) {
-                return fail(400, { message: authcheck.message });
+            let { username, password, file } = Object.fromEntries(formData) as { username: string, password: string, file: File };
+
+            const session = getSessionFromCookies(cookies);
+            if (session) {
+                username = session.username;
+            } else {
+                const authcheck = checkUserAuth(username, password);
+                if (!authcheck.success) {
+                    return fail(400, { message: authcheck.message });
+                }
             }
 
             if (!existsSync(fileDirRoot)) {

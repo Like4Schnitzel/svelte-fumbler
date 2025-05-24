@@ -4,8 +4,10 @@
 </script>
 
 <form method="POST" enctype="multipart/form-data">
-    <input type="text" id="username" name="username" required />
-    <input type="password" id="password" name="password" required />
+    {#if !data.username}
+        <input type="text" id="username" name="username" required />
+        <input type="password" id="password" name="password" required />
+    {/if}
     <input type="file" id="file-upload" name="file" required />
     <button type="submit">Upload</button>
 </form>

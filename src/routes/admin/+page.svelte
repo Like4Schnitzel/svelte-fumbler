@@ -5,9 +5,11 @@
 </script>
 
 <form method="POST">
-    <p>Auth</p>
-    <input type="text" id="username" name="username" required />
-    <input type="password" id="password" name="password" required />
+    {#if !data.session}
+        <p>Auth</p>
+        <input type="text" id="username" name="username" required />
+        <input type="password" id="password" name="password" required />
+    {/if}
     <p>New user</p>
     <input type="text" id="new-username" name="new-username" required />
     <button type="submit">Upload</button>
