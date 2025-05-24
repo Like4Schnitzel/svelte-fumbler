@@ -5,10 +5,11 @@ import { join } from "path";
 
 const defaultData: User[] = []
 
-export const db = await JSONFilePreset("db.json", defaultData);
-db.write();
-
 export const fileDirRoot = join(import.meta.dirname, "..", "..", "files");
+export const dbPath = join(import.meta.dirname, "..", "..", "db.json");
+
+export const db = await JSONFilePreset(dbPath, defaultData);
+db.write();
 
 export function checkUserAuth(username: string, password: string): {
     success: boolean;
